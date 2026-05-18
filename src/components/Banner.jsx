@@ -103,12 +103,12 @@ export default function Banner() {
     }, []);
 
     return (
-        <section className="relative w-full h-[650px] md:h-[720px] bg-zinc-950 overflow-hidden flex items-center border-b border-zinc-900">
+        <section className="relative w-full h-162.5 md:h-180 bg-zinc-950 overflow-hidden flex items-center border-b border-zinc-900">
 
             {/* ── BACKGROUND IMAGE SLIDER ─────────────────────────────────── */}
             <div className="absolute inset-0 z-0">
                 {/* dot-grid texture */}
-                <div className="absolute inset-0 bg-[radial-gradient(#1c1c1c_1px,transparent_1px)] [background-size:24px_24px] opacity-25 z-10" />
+                <div className="absolute inset-0 bg-[radial-gradient(#1c1c1c_1px,transparent_1px)] bg-size-[24px_24px] opacity-25 z-10" />
 
                 <AnimatePresence initial={false} mode="sync">
                     <motion.div
@@ -145,8 +145,8 @@ export default function Banner() {
                 </AnimatePresence>
 
                 {/* vignette overlays — keep text readable */}
-                <div className="absolute inset-0 z-20 bg-gradient-to-r from-zinc-950 via-zinc-950/75 to-transparent" />
-                <div className="absolute inset-0 z-20 bg-gradient-to-t from-zinc-950/90 via-transparent to-zinc-950/40" />
+                <div className="absolute inset-0 z-20 bg-linear-to-r from-zinc-950 via-zinc-950/75 to-transparent" />
+                <div className="absolute inset-0 z-20 bg-linear-to-t from-zinc-950/90 via-transparent to-zinc-950/40" />
             </div>
 
             {/* ── HERO CONTENT ─────────────────────────────────────────────── */}
@@ -170,7 +170,7 @@ export default function Banner() {
                     </motion.div>
 
                     {/* ── FIX 2: min-h prevents layout jump; text uses TEXT_VARIANTS ── */}
-                    <div className="min-h-[200px] sm:min-h-[230px]">
+                    <div className="min-h-50 sm:min-h-57.5">
                         <AnimatePresence initial={false} mode="wait">
                             <motion.div
                                 key={activeSport.id}
@@ -182,7 +182,7 @@ export default function Banner() {
                                 <h1 className="text-4xl sm:text-6xl font-black uppercase tracking-tighter text-white italic leading-none">
                                     Book Your <br />
                                     <span
-                                        className={`bg-gradient-to-r ${activeSport.accentColor} bg-clip-text text-transparent drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]`}
+                                        className={`bg-linear-to-r ${activeSport.accentColor} bg-clip-text text-transparent drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]`}
                                     >
                                         {activeSport.title}
                                     </span>
@@ -207,7 +207,7 @@ export default function Banner() {
                         transition={{ delay: 0.3, duration: 0.5 }}
                         className="flex flex-wrap gap-4 mt-8 w-full sm:w-auto"
                     >
-                        <button className="w-full sm:w-auto relative inline-flex items-center justify-center gap-2 bg-gradient-to-r from-lime-400 to-lime-500 hover:from-lime-300 hover:to-lime-400 text-black font-black text-xs uppercase tracking-widest italic rounded-xl h-12 px-8 transition-all duration-200 active:scale-95 shadow-[0_0_30px_rgba(163,230,53,0.25)] group">
+                        <button className="w-full sm:w-auto relative inline-flex items-center justify-center gap-2 bg-linear-to-r from-lime-400 to-lime-500 hover:from-lime-300 hover:to-lime-400 text-black font-black text-xs uppercase tracking-widest italic rounded-xl h-12 px-8 transition-all duration-200 active:scale-95 shadow-[0_0_30px_rgba(163,230,53,0.25)] group">
                             <span>Reserve Court Now</span>
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </button>
@@ -241,7 +241,7 @@ export default function Banner() {
                                     <div className="flex items-center gap-3">
                                         <div
                                             className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs transition-all duration-300 ${isSelected
-                                                ? `bg-gradient-to-br ${sport.accentColor} text-black font-black scale-105`
+                                                ? `bg-linear-to-br ${sport.accentColor} text-black font-black scale-105`
                                                 : "bg-zinc-900 border border-zinc-800 text-zinc-400 group-hover:text-white"
                                                 }`}
                                         >
@@ -254,7 +254,7 @@ export default function Banner() {
                                             >
                                                 {sport.id}
                                             </span>
-                                            <span className="text-[9px] text-zinc-500 font-medium truncate max-w-[140px]">
+                                            <span className="text-[9px] text-zinc-500 font-medium truncate max-w-35">
                                                 {sport.title.split(" ")[0]} Arena
                                             </span>
                                         </div>
@@ -285,14 +285,14 @@ export default function Banner() {
                         {index === activeIndex && (
                             <motion.div
                                 key={`progress-${activeIndex}`}
-                                className={`h-full bg-gradient-to-r ${sport.accentColor}`}
+                                className={`h-full bg-linear-to-r ${sport.accentColor}`}
                                 initial={{ width: "0%" }}
                                 animate={{ width: "100%" }}
                                 transition={{ duration: 8, ease: "linear" }}
                             />
                         )}
                         {index < activeIndex && (
-                            <div className={`h-full w-full bg-gradient-to-r ${sport.accentColor} opacity-40`} />
+                            <div className={`h-full w-full bg-linear-to-r ${sport.accentColor} opacity-40`} />
                         )}
                     </button>
                 ))}

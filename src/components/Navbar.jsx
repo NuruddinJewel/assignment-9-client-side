@@ -11,17 +11,18 @@ import {
     LayoutDashboard,
     LogOut,
     LogIn,
+    UserPlus,
     ChevronDown,
     Menu,
     X,
 } from "lucide-react";
 import Image from "next/image";
 
-// better-auth (uncomment when ready)
-// import { authClient } from "@/lib/auth-client";
+// better-auth 
+import { authClient } from "@/lib/auth-client";
 
 // ─────────────────────────────────────────────────────────────────────────────
-//  NavLink defined OUTSIDE Navbar — no re-creation on every render
+//  NavLink defined OUTSIDE Navbar 
 // ─────────────────────────────────────────────────────────────────────────────
 function NavLink({ href, label, icon: Icon, active, onClick }) {
     return (
@@ -70,17 +71,11 @@ export default function Navbar() {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
 
-    // ── Fake auth state — replace with real better-auth below ──────────────
-    const isPending = false;
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
-    const user = { name: "Ghost", email: "ghost@sportnest.com", image: "" };
-    const handleLogout = () => { setIsLoggedIn(false); setDropdownOpen(false); };
-
     // Real better-auth:
-    // const { data: session, isPending } = authClient.useSession();
-    // const user       = session?.user;
-    // const isLoggedIn = !!user;
-    // const handleLogout = async () => { await authClient.signOut(); setDropdownOpen(false); };
+    const { data: session, isPending } = authClient.useSession();
+    const user = session?.user;
+    const isLoggedIn = !!user;
+    const handleLogout = async () => { await authClient.signOut(); setDropdownOpen(false); };
 
     //  Dropdown close on outside click
     useEffect(() => {
@@ -95,7 +90,7 @@ export default function Navbar() {
 
     const isActive = (path) => pathname === path;
 
-    // ── Avatar initials helper ──────────────────────────────────────────────
+    //  Avatar initials helper
     const initials = user?.name
         ? user.name.split(" ").map((n) => n[0]).slice(0, 2).join("").toUpperCase()
         : "U";
@@ -151,12 +146,12 @@ export default function Navbar() {
                                     aria-expanded={dropdownOpen}
                                     aria-haspopup="true"
                                 >
-                                    <div className="w-8 h-8 rounded-full ring-2 ring-lime-500/30 bg-zinc-800 overflow-hidden flex items-center justify-center shrink-0">
+                                    <div className="w-8 h-8 rounded-full ring-2 ring-lime-500/30 bg-zinc-800 overflow-hidden flex items-center justify-center shrink-0 relative">
                                         {user?.image ? (
                                             <Image
                                                 src={user.image}
                                                 alt={user?.name || "User Avatar"}
-                                                fill // 👈 
+                                                fill
                                                 sizes="32px"
                                                 className="object-cover"
                                             />
@@ -210,13 +205,23 @@ export default function Navbar() {
                             </div>
 
                         ) : (
-                            <Link
-                                href="/login"
-                                className="inline-flex items-center justify-center gap-2 bg-lime-500 hover:bg-lime-400 text-black font-black text-xs uppercase tracking-widest rounded-xl h-9 px-5 transition-all duration-200 active:scale-95 shadow-[0_0_18px_rgba(163,230,53,0.3)]"
-                            >
-                                Login
-                                <LogIn className="w-4 h-4 stroke-[2.5]" />
-                            </Link>
+                            // ── Desktop Auth Buttons (Login and Register) ──
+                            <div className="hidden sm:flex items-center gap-2">
+                                <Link
+                                    href="/register"
+                                    className="inline-flex items-center justify-center gap-1.5 border border-zinc-800 hover:border-zinc-700 bg-white/5 hover:bg-white/10 text-white font-bold text-xs uppercase tracking-widest rounded-xl h-9 px-4 transition-all duration-200 active:scale-95"
+                                >
+                                    <UserPlus className="w-3.5 h-3.5 text-lime-400 stroke-[2.2]" />
+                                    Register
+                                </Link>
+                                <Link
+                                    href="/login"
+                                    className="inline-flex items-center justify-center gap-1.5 bg-lime-500 hover:bg-lime-400 text-black font-black text-xs uppercase tracking-widest rounded-xl h-9 px-4 transition-all duration-200 active:scale-95 shadow-[0_0_18px_rgba(163,230,53,0.3)]"
+                                >
+                                    Login
+                                    <LogIn className="w-3.5 h-3.5 stroke-[2.5]" />
+                                </Link>
+                            </div>
                         )}
 
                         {/* Mobile Toggle */}
@@ -231,7 +236,7 @@ export default function Navbar() {
                 </div>
             </div>
 
-            {/* ── Mobile Drawer (Properly Placed Inside Return) ── */}
+            {/* ── Mobile Drawer ── */}
             <div
                 className={`md:hidden border-t border-zinc-800/60 bg-[#080808] overflow-hidden transition-all duration-300 ease-in-out ${mobileOpen ? "max-h-125 opacity-100" : "max-h-0 opacity-0"
                     }`}
@@ -261,6 +266,7 @@ export default function Navbar() {
                                     onClick={() => setMobileOpen(false)}
                                     className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold uppercase tracking-wider transition-all
                                         ${isActive(href) ? "text-lime-400 bg-lime-400/10" : "text-zinc-400 hover:text-white hover:bg-white/5"}`}
+                                // 
                                 >
                                     <Icon className="w-4 h-4 stroke-[2.2]" />
                                     {label}
@@ -277,18 +283,28 @@ export default function Navbar() {
                         </>
                     )}
 
+                    {/* ── Mobile Auth UI (Register + Login buttons ) ── */}
                     {!isLoggedIn && !isPending && (
                         <>
                             <div className="h-px bg-zinc-800 my-2" />
-                            <Link
-                                href="/login"
-                                onClick={() => setMobileOpen(false)}
-                                className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-lime-500 text-black font-black uppercase tracking-wider text-sm active:scale-95 transition-all"
-                                style={{ boxShadow: "0 0 16px rgba(163,230,53,0.25)" }}
-                            >
-                                <LogIn className="w-4 h-4 stroke-[2.5]" />
-                                Login
-                            </Link>
+                            <div className="flex flex-col gap-2">
+                                <Link
+                                    href="/register"
+                                    onClick={() => setMobileOpen(false)}
+                                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-zinc-800 bg-white/5 text-white font-bold uppercase tracking-wider text-sm active:scale-95 transition-all"
+                                >
+                                    <UserPlus className="w-4 h-4 text-lime-400 stroke-[2.2]" />
+                                    Register
+                                </Link>
+                                <Link
+                                    href="/login"
+                                    onClick={() => setMobileOpen(false)}
+                                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-lime-500 text-black font-black uppercase tracking-wider text-sm active:scale-95 transition-all shadow-[0_0_16px_rgba(163,230,53,0.25)]"
+                                >
+                                    <LogIn className="w-4 h-4 stroke-[2.5]" />
+                                    Login
+                                </Link>
+                            </div>
                         </>
                     )}
                 </div>

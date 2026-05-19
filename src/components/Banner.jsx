@@ -119,7 +119,7 @@ export default function Banner() {
                         exit="exit"
                         className="absolute inset-0"
                     >
-                        {/* ── FIX 1: brightness raised to 1.0, opacity to 0.55 ── */}
+                        {/* brightness raised to 1.0, opacity to 0.55 ── */}
                         <Image
                             src={activeSport.image}
                             alt={activeSport.title}
@@ -128,8 +128,8 @@ export default function Banner() {
                             sizes="100vw"
                             className="object-cover"
                             style={{
-                                opacity: 0.55,          // was 0.35 — now clearly visible
-                                filter: "contrast(1.15) brightness(1.0) saturate(1.1)",
+                                opacity: 0.75,
+                                filter: "contrast(1.1) brightness(1.35) saturate(1.1)",
                             }}
                             onError={(e) => {
                                 e.currentTarget.style.opacity = "0";

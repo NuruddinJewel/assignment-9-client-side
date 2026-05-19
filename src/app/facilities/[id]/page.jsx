@@ -239,7 +239,7 @@ export default function FacilityDetailsPage() {
                                             type="date"
                                             required
                                             value={bookingDate}
-                                            min={new Date().toISOString().split('T')[0]} // পেছনের ডেট লক করার জন্য
+                                            min={new Date().toISOString().split('T')[0]} // Date Set
                                             onChange={(e) => setBookingDate(e.target.value)}
                                             className="w-full h-11 px-4 rounded-xl bg-zinc-950 border border-zinc-800 text-white text-sm focus:outline-none focus:border-lime-500/40 transition-colors cursor-pointer scheme-dark"
                                         />

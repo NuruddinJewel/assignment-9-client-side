@@ -59,9 +59,9 @@ const PUBLIC_LINKS = [
 ];
 
 const PRIVATE_LINKS = [
-    { href: "/dashboard/my-bookings", label: "My Bookings", icon: CalendarDays },
-    { href: "/dashboard/add-facility", label: "Add Facility", icon: PlusCircle },
-    { href: "/dashboard/manage-facilities", label: "Manage My Facilities", icon: LayoutDashboard },
+    { href: "/bookings", label: "My Bookings", icon: CalendarDays },
+    { href: "/add-facility", label: "Add Facility", icon: PlusCircle },
+    { href: "/manage", label: "Manage My Facilities", icon: LayoutDashboard },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────

@@ -119,7 +119,7 @@ export default function Banner() {
                         exit="exit"
                         className="absolute inset-0"
                     >
-                        {/* brightness raised to 1.0, opacity to 0.55 ── */}
+                        {/* brightness and opacity*/}
                         <Image
                             src={activeSport.image}
                             alt={activeSport.title}
@@ -169,7 +169,7 @@ export default function Banner() {
                         Arena Live Booking System
                     </motion.div>
 
-                    {/* ── FIX 2: min-h prevents layout jump; text uses TEXT_VARIANTS ── */}
+
                     <div className="min-h-50 sm:min-h-57.5">
                         <AnimatePresence initial={false} mode="wait">
                             <motion.div

@@ -60,7 +60,6 @@ const PUBLIC_LINKS = [
 
 const PRIVATE_LINKS = [
     { href: "/bookings", label: "My Bookings", icon: CalendarDays },
-    { href: "/add-facility", label: "Add Facility", icon: PlusCircle },
     { href: "/manage", label: "Manage My Facilities", icon: LayoutDashboard },
 ];
 

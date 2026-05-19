@@ -161,7 +161,7 @@ export default function ManageDashboard() {
                     </button>
                 </div>
 
-                {/* Tab 1: Bookings List Section */}
+                {/* Bookings List Section */}
                 {activeTab === "bookings" && (
                     <div className="mt-8">
                         <h2 className="text-lg font-bold text-white mb-4 uppercase tracking-wide">Users Reservations</h2>
@@ -212,7 +212,7 @@ export default function ManageDashboard() {
                     </div>
                 )}
 
-                {/* Tab 2: Add New Arena Form Section */}
+                {/* Add New Arena Form Section */}
                 {activeTab === "add-arena" && (
                     <div className="mt-8 max-w-3xl bg-zinc-900 border border-zinc-800 rounded-2xl p-6 sm:p-8">
                         <h2 className="text-lg font-bold text-white mb-2 uppercase tracking-wide">Deploy New Sports Arena</h2>

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight, Trophy, Zap, Star } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 const SPORTS_DATA = [
     {
@@ -207,10 +208,12 @@ export default function Banner() {
                         transition={{ delay: 0.3, duration: 0.5 }}
                         className="flex flex-wrap gap-4 mt-8 w-full sm:w-auto"
                     >
-                        <button className="w-full sm:w-auto relative inline-flex items-center justify-center gap-2 bg-linear-to-r from-lime-400 to-lime-500 hover:from-lime-300 hover:to-lime-400 text-black font-black text-xs uppercase tracking-widest italic rounded-xl h-12 px-8 transition-all duration-200 active:scale-95 shadow-[0_0_30px_rgba(163,230,53,0.25)] group">
+                        <Link
+                            href="/facilities"
+                            className="w-full sm:w-auto relative inline-flex items-center justify-center gap-2 bg-linear-to-r from-lime-400 to-lime-500 hover:from-lime-300 hover:to-lime-400 text-black font-black text-xs uppercase tracking-widest italic rounded-xl h-12 px-8 transition-all duration-200 active:scale-95 shadow-[0_0_30px_rgba(163,230,53,0.25)] group">
                             <span>Reserve Court Now</span>
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </button>
+                        </Link>
 
                         <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-zinc-900/80 hover:bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-300 hover:text-white font-black text-xs uppercase tracking-widest italic rounded-xl h-12 px-7 transition-all">
                             <Trophy className="w-4 h-4 text-lime-400" />

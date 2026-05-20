@@ -56,6 +56,7 @@ export default function FacilityDetailsPage() {
         const bookingInfo = {
             facilityId: id,
             facilityName: facility.name,
+            ownerEmail: facility.ownerEmail,
             facilityImage: facility.image,
             pricePerHour: facility.pricePerHour,
             userName: session.user.name,

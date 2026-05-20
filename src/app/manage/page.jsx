@@ -12,7 +12,8 @@ import {
     Layers,
     MapPin,
     Image as ImageIcon,
-    Users
+    Users,
+    Trash2
 } from "lucide-react";
 
 export default function ManageDashboard() {
@@ -46,7 +47,10 @@ export default function ManageDashboard() {
 
     // Dependency Array
     useEffect(() => {
-        fetch(`${apiUrl}/owner-bookings`)
+        // Session Owner Email 
+        if (!session?.user?.email) return;
+
+        fetch(`${apiUrl}/owner-bookings?email=${session.user.email}`)
             .then((res) => res.json())
             .then((data) => {
                 if (Array.isArray(data)) {
@@ -58,7 +62,7 @@ export default function ManageDashboard() {
                 console.error("Error fetching bookings:", err);
                 setLoadingBookings(false);
             });
-    }, [apiUrl, setAllBookings, setLoadingBookings]);
+    }, [apiUrl, session?.user?.email]);
 
     // New field Handler
     const handleInputChange = (e) => {
@@ -124,6 +128,31 @@ export default function ManageDashboard() {
             setMessage({ type: "error", text: "Server error occurred." });
         } finally {
             setSubmitting(false);
+        }
+    };
+    // Owner Booking Function
+    const handleCancelBooking = async (bookingId) => {
+        const confirmCancel = window.confirm("Are you sure you want to cancel this user reservation?");
+        if (!confirmCancel) return;
+
+        try {
+            const res = await fetch(`${apiUrl}/bookings/${bookingId}`, {
+                method: "DELETE",
+            });
+
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+                alert("Booking canceled successfully!");
+                setAllBookings((prevBookings) =>
+                    prevBookings.filter((booking) => booking._id !== bookingId)
+                );
+            } else {
+                alert(data.message || "Failed to cancel the booking.");
+            }
+        } catch (error) {
+            console.error("Error canceling booking:", error);
+            alert("Server error occurred while canceling.");
         }
     };
 
@@ -216,6 +245,14 @@ export default function ManageDashboard() {
                                             <div className="flex flex-col text-right">
                                                 <span className="text-[9px] uppercase tracking-wider text-zinc-500 flex items-center gap-1"><DollarSign className="w-3 h-3" /> Received</span>
                                                 <span className="text-sm font-black text-lime-400 mt-0.5">${booking.pricePerHour || booking.price}</span>
+                                            </div>
+                                            <div className="flex items-center pl-4">
+                                                <button
+                                                    onClick={() => handleCancelBooking(booking._id)}
+                                                    className="h-9 px-3 rounded-xl border border-zinc-800 hover:border-red-500/30 hover:bg-red-500/10 text-zinc-500 hover:text-red-400 text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 active:scale-95"
+                                                >
+                                                    <Trash2 className="w-3.5 h-3.5" /> Cancel Booking
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

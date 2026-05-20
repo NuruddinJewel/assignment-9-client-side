@@ -13,7 +13,7 @@ const SPORTS_DATA = [
         tagline: "Unleash Your Inner Champion On Professional Grass",
         description:
             "FIFA-grade pro turf fields equipped with advanced floodlighting systems for premium night tournaments.",
-        image: "https://i.ibb.co.com/pjvzgpnW/football.jpg",
+        image: "https://i.ibb.co.com/QFHJskMb/1.jpg",
         accentColor: "from-lime-400 to-emerald-500",
         glowColor: "rgba(163,230,53,0.12)",
     },

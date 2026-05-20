@@ -1,7 +1,7 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 import {
     LayoutDashboard,
     PlusCircle,
@@ -25,6 +25,7 @@ export default function ManageDashboard() {
     // Booking List State
     const [allBookings, setAllBookings] = useState([]);
     const [loadingBookings, setLoadingBookings] = useState(true);
+    const router = useRouter();
 
     // New Arena Form
     const [formData, setFormData] = useState({
@@ -43,10 +44,9 @@ export default function ManageDashboard() {
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
-    // All user Booking List
+    // Dependency Array
     useEffect(() => {
-        fetch(`${apiUrl}/facilities`)
-        fetch(`${apiUrl}/bookings?email=${session?.user?.email}`)
+        fetch(`${apiUrl}/owner-bookings`)
             .then((res) => res.json())
             .then((data) => {
                 if (Array.isArray(data)) {
@@ -58,9 +58,9 @@ export default function ManageDashboard() {
                 console.error("Error fetching bookings:", err);
                 setLoadingBookings(false);
             });
-    }, [session, apiUrl]);
+    }, [apiUrl, setAllBookings, setLoadingBookings]);
 
-    //New field Handler
+    // New field Handler
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -68,6 +68,12 @@ export default function ManageDashboard() {
 
     const handleAddArenaSubmit = async (e) => {
         e.preventDefault();
+
+        if (!session?.user?.email) {
+            setMessage({ type: "error", text: "You must be logged in as an owner to add an arena." });
+            return;
+        }
+
         setSubmitting(true);
         setMessage({ type: "", text: "" });
 
@@ -81,7 +87,7 @@ export default function ManageDashboard() {
             pricePerHour: parseFloat(formData.pricePerHour),
             capacity: parseInt(formData.capacity),
             availableSlots: slotsArray,
-            ownerEmail: session?.user?.email
+            ownerEmail: session.user.email
         };
 
         try {
@@ -93,7 +99,8 @@ export default function ManageDashboard() {
 
             if (res.ok) {
                 setMessage({ type: "success", text: "New Sports Arena added successfully!" });
-                //Form Reset
+
+                // Form Reset
                 setFormData({
                     name: "",
                     type: "",
@@ -104,6 +111,12 @@ export default function ManageDashboard() {
                     availableSlots: "",
                     description: ""
                 });
+
+                const timer = setTimeout(() => {
+                    router.push("/facilities");
+                }, 1500);
+
+                return () => clearTimeout(timer);
             } else {
                 setMessage({ type: "error", text: "Failed to add facility. Try again." });
             }
@@ -186,7 +199,7 @@ export default function ManageDashboard() {
                                     >
                                         <div>
                                             <span className="text-[10px] bg-zinc-950 border border-zinc-800 px-2 py-0.5 rounded text-lime-400 font-mono">
-                                                ID: {booking._id.slice(-6)}
+                                                ID: {booking._id ? booking._id.slice(-6) : "N/A"}
                                             </span>
                                             <h3 className="text-white font-black text-base mt-2">{booking.facilityName}</h3>
                                             <div className="flex flex-wrap gap-4 text-xs text-zinc-400 mt-2">
@@ -227,7 +240,7 @@ export default function ManageDashboard() {
                         <form onSubmit={handleAddArenaSubmit} className="space-y-5">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 <div>
-                                    <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Arena / Stadium Name</label>
+                                    <label className="flex items-center text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Arena / Stadium Name</label>
                                     <input
                                         type="text" name="name" required value={formData.name} onChange={handleInputChange}
                                         placeholder="e.g. Old Trafford Turf"
@@ -235,7 +248,7 @@ export default function ManageDashboard() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Sports Type</label>
+                                    <label className="flex items-center text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Sports Type</label>
                                     <input
                                         type="text" name="type" required value={formData.type} onChange={handleInputChange}
                                         placeholder="e.g. Football, Cricket, Badminton"

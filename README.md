@@ -10,18 +10,24 @@
 [![Better Auth](https://img.shields.io/badge/Auth-Better--Auth-DAF9DE?style=for-the-badge)](https://better-auth.com)
 [![DaisyUI](https://img.shields.io/badge/UI-DaisyUI-59B292?style=for-the-badge&logo=daisyui&logoColor=white)](https://daisyui.com)
 [![Tailwind CSS](https://img.shields.io/badge/CSS-Tailwind--CSS-94B4C1?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+
 ---
 </div>
 
-<!-- ## 📸 Preview
+## 📸 Preview
 
-|        Hero Section        |          Featured Facilities           |
-| :------------------------: | :------------------------------------: |
-| ![Hero](./public/hero.png) | ![Facilities](./public/facilities.png) | --> |
+<div align="center">
+  <img src="./public/football.png" width="45%" alt="Hero Section" />
+  <img src="./public/basketball.png" width="45%" style="margin-left: 0.6%;" alt="Booking System" />
+<br />
+  <img src="./public/facilities.png" width="55%" alt="Featured Facilities" />
+</div>
 
-> *Book your slot at elite football turfs, badminton courts, basketball arenas, swimming lanes & more.*
+<div align="center">
+  <h3>🌟 <em>Book your slot at elite football turfs, badminton courts, basketball arenas, swimming lanes & more.</em></h3>
+</div>
 
-<!-- --- -->
+---
 
 ## 🎯 Purpose
 
@@ -126,11 +132,11 @@ npm install
 ```bash
 node index.js
 ```
-
 ---
-<!-- ## ⚽ Live URL
 
-> 🔗 **[https://https://assignment-9-client-side-six.vercel.app/](https://)** -->
+## ⚽ Live URL
+
+> 🔗 **[https://assignment-9-client-side-six.vercel.app](https://assignment-9-client-side-six.vercel.app)**
 
 ---
 

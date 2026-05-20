@@ -1,13 +1,12 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
     Trophy,
     Home,
     Dumbbell,
     CalendarDays,
-    PlusCircle,
     LayoutDashboard,
     LogOut,
     LogIn,
@@ -18,12 +17,9 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 
-// better-auth 
 import { authClient } from "@/lib/auth-client";
+import { toast } from "react-toastify";
 
-// ─────────────────────────────────────────────────────────────────────────────
-//  NavLink defined OUTSIDE Navbar 
-// ─────────────────────────────────────────────────────────────────────────────
 function NavLink({ href, label, icon: Icon, active, onClick }) {
     return (
         <Link
@@ -52,7 +48,6 @@ function NavLink({ href, label, icon: Icon, active, onClick }) {
     );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
 const PUBLIC_LINKS = [
     { href: "/", label: "Home", icon: Home },
     { href: "/facilities", label: "All Facilities", icon: Dumbbell },
@@ -63,20 +58,31 @@ const PRIVATE_LINKS = [
     { href: "/manage", label: "Manage My Facilities", icon: LayoutDashboard },
 ];
 
-// ─────────────────────────────────────────────────────────────────────────────
 export default function Navbar() {
     const pathname = usePathname();
+    const router = useRouter();
     const [mobileOpen, setMobileOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
 
-    // Real better-auth:
     const { data: session, isPending } = authClient.useSession();
     const user = session?.user;
     const isLoggedIn = !!user;
-    const handleLogout = async () => { await authClient.signOut(); setDropdownOpen(false); };
 
-    //  Dropdown close on outside click
+    const handleLogout = async () => {
+        try {
+            await authClient.signOut();
+            toast.success("Logged out successfully!");
+            setDropdownOpen(false);
+            setMobileOpen(false);
+            router.push("/");
+            router.refresh();
+        } catch (error) {
+            console.error("Logout error:", error);
+            toast.error("Failed to log out. Please try again.");
+        }
+    };
+
     useEffect(() => {
         function handleClickOutside(e) {
             if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -89,7 +95,6 @@ export default function Navbar() {
 
     const isActive = (path) => pathname === path;
 
-    //  Avatar initials helper
     const initials = user?.name
         ? user.name.split(" ").map((n) => n[0]).slice(0, 2).join("").toUpperCase()
         : "U";
@@ -102,7 +107,7 @@ export default function Navbar() {
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex h-16 items-center justify-between gap-4">
 
-                    {/* ── Logo ── */}
+                    {/* Logo */}
                     <Link href="/" className="flex items-center gap-2.5 group shrink-0 select-none">
                         <div
                             className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-lime-500 text-black overflow-hidden"
@@ -121,7 +126,7 @@ export default function Navbar() {
                         </div>
                     </Link>
 
-                    {/* ── Desktop Nav ── */}
+                    {/* Desktop Nav */}
                     <nav className="hidden md:flex items-center gap-1">
                         {PUBLIC_LINKS.map((link) => (
                             <NavLink key={link.href} {...link} active={isActive(link.href)} />
@@ -131,7 +136,7 @@ export default function Navbar() {
                         ))}
                     </nav>
 
-                    {/* ── Right Side ── */}
+                    {/* Right Side */}
                     <div className="flex items-center gap-3 shrink-0">
 
                         {isPending ? (
@@ -166,7 +171,6 @@ export default function Navbar() {
                                     />
                                 </button>
 
-                                {/* Dropdown Panel */}
                                 {dropdownOpen && (
                                     <ul className="absolute right-0 top-full mt-2 w-60 bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl p-2 flex flex-col gap-1 z-50">
                                         <li className="px-3 py-2 border-b border-zinc-800/80 mb-1 select-none pointer-events-none">
@@ -204,7 +208,7 @@ export default function Navbar() {
                             </div>
 
                         ) : (
-                            // ── Desktop Auth Buttons (Login and Register) ──
+                            // ── Desktop Auth Buttons ──
                             <div className="hidden sm:flex items-center gap-2">
                                 <Link
                                     href="/register"
@@ -235,7 +239,7 @@ export default function Navbar() {
                 </div>
             </div>
 
-            {/* ── Mobile Drawer ── */}
+            {/* Mobile Drawer */}
             <div
                 className={`md:hidden border-t border-zinc-800/60 bg-[#080808] overflow-hidden transition-all duration-300 ease-in-out ${mobileOpen ? "max-h-125 opacity-100" : "max-h-0 opacity-0"
                     }`}
@@ -265,7 +269,6 @@ export default function Navbar() {
                                     onClick={() => setMobileOpen(false)}
                                     className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold uppercase tracking-wider transition-all
                                         ${isActive(href) ? "text-lime-400 bg-lime-400/10" : "text-zinc-400 hover:text-white hover:bg-white/5"}`}
-                                // 
                                 >
                                     <Icon className="w-4 h-4 stroke-[2.2]" />
                                     {label}
@@ -273,7 +276,7 @@ export default function Navbar() {
                             ))}
                             <div className="h-px bg-zinc-800 my-2" />
                             <button
-                                onClick={() => { handleLogout(); setMobileOpen(false); }}
+                                onClick={handleLogout}
                                 className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold uppercase tracking-wider text-red-400 hover:bg-red-500/10 transition-all w-full text-left"
                             >
                                 <LogOut className="w-4 h-4 stroke-[2.2]" />
@@ -282,7 +285,6 @@ export default function Navbar() {
                         </>
                     )}
 
-                    {/* ── Mobile Auth UI (Register + Login buttons ) ── */}
                     {!isLoggedIn && !isPending && (
                         <>
                             <div className="h-px bg-zinc-800 my-2" />

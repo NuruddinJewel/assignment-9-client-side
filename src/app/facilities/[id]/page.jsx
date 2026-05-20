@@ -80,7 +80,7 @@ export default function FacilityDetailsPage() {
                 setBookingDate("");
                 setTimeout(() => router.push("/bookings"), 3000);
             } else {
-                alert("Something went wrong. Try again.");
+                toast.error("Something went wrong. Try again.");
             }
         } catch (error) {
             console.error("Booking error:", error);

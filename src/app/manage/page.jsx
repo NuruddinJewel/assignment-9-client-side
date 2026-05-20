@@ -15,20 +15,17 @@ import {
     Users,
     Trash2
 } from "lucide-react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ManageDashboard() {
-    // Better Auth session
     const { data: session, isPending } = authClient.useSession();
 
-    // State Management
     const [activeTab, setActiveTab] = useState("bookings");
-
-    // Booking List State
     const [allBookings, setAllBookings] = useState([]);
     const [loadingBookings, setLoadingBookings] = useState(true);
     const router = useRouter();
 
-    // New Arena Form
     const [formData, setFormData] = useState({
         name: "",
         type: "",
@@ -41,13 +38,10 @@ export default function ManageDashboard() {
     });
 
     const [submitting, setSubmitting] = useState(false);
-    const [message, setMessage] = useState({ type: "", text: "" });
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
-    // Dependency Array
     useEffect(() => {
-        // Session Owner Email 
         if (!session?.user?.email) return;
 
         fetch(`${apiUrl}/owner-bookings?email=${session.user.email}`)
@@ -64,7 +58,6 @@ export default function ManageDashboard() {
             });
     }, [apiUrl, session?.user?.email]);
 
-    // New field Handler
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -74,12 +67,11 @@ export default function ManageDashboard() {
         e.preventDefault();
 
         if (!session?.user?.email) {
-            setMessage({ type: "error", text: "You must be logged in as an owner to add an arena." });
+            toast.error("You must be logged in as an owner to add an arena.");
             return;
         }
 
         setSubmitting(true);
-        setMessage({ type: "", text: "" });
 
         const slotsArray = formData.availableSlots
             .split(",")
@@ -102,9 +94,8 @@ export default function ManageDashboard() {
             });
 
             if (res.ok) {
-                setMessage({ type: "success", text: "New Sports Arena added successfully!" });
+                toast.success("New Sports Arena added successfully!");
 
-                // Form Reset
                 setFormData({
                     name: "",
                     type: "",
@@ -122,15 +113,15 @@ export default function ManageDashboard() {
 
                 return () => clearTimeout(timer);
             } else {
-                setMessage({ type: "error", text: "Failed to add facility. Try again." });
+                toast.error("Failed to add facility. Try again.");
             }
         } catch (error) {
-            setMessage({ type: "error", text: "Server error occurred." });
+            toast.error("Server error occurred.");
         } finally {
             setSubmitting(false);
         }
     };
-    // Owner Booking Function
+
     const handleCancelBooking = async (bookingId) => {
         const confirmCancel = window.confirm("Are you sure you want to cancel this user reservation?");
         if (!confirmCancel) return;
@@ -143,16 +134,16 @@ export default function ManageDashboard() {
             const data = await res.json();
 
             if (res.ok && data.success) {
-                alert("Booking canceled successfully!");
+                toast.success("Booking cancelled successfully!");
                 setAllBookings((prevBookings) =>
                     prevBookings.filter((booking) => booking._id !== bookingId)
                 );
             } else {
-                alert(data.message || "Failed to cancel the booking.");
+                toast.error(data.message || "Failed to cancel the booking.");
             }
         } catch (error) {
             console.error("Error canceling booking:", error);
-            alert("Server error occurred while canceling.");
+            toast.error("Server error occurred while canceling.");
         }
     };
 
@@ -166,6 +157,16 @@ export default function ManageDashboard() {
 
     return (
         <div className="min-h-screen bg-zinc-950 text-zinc-300 pb-20">
+
+            <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                pauseOnHover
+                theme="dark"
+            />
 
             {/* Top Welcome Header */}
             <div className="border-b border-zinc-900 bg-zinc-950 py-10 px-4 sm:px-6 lg:px-8">
@@ -232,18 +233,28 @@ export default function ManageDashboard() {
                                             </span>
                                             <h3 className="text-white font-black text-base mt-2">{booking.facilityName}</h3>
                                             <div className="flex flex-wrap gap-4 text-xs text-zinc-400 mt-2">
-                                                <span className="flex items-center gap-1"><User className="w-3.5 h-3.5 text-zinc-600" /> {booking.userName || "Customer"} ({booking.userEmail})</span>
-                                                <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5 text-zinc-600" /> {booking.bookingDate}</span>
+                                                <span className="flex items-center gap-1">
+                                                    <User className="w-3.5 h-3.5 text-zinc-600" />
+                                                    {booking.userName || "Customer"} ({booking.userEmail})
+                                                </span>
+                                                <span className="flex items-center gap-1">
+                                                    <Calendar className="w-3.5 h-3.5 text-zinc-600" />
+                                                    {booking.bookingDate}
+                                                </span>
                                             </div>
                                         </div>
 
                                         <div className="flex items-center gap-6 border-t border-zinc-800 md:border-t-0 pt-3 md:pt-0 justify-between">
                                             <div className="flex flex-col">
-                                                <span className="text-[9px] uppercase tracking-wider text-zinc-500 flex items-center gap-1"><Clock className="w-3 h-3" /> Slot</span>
+                                                <span className="text-[9px] uppercase tracking-wider text-zinc-500 flex items-center gap-1">
+                                                    <Clock className="w-3 h-3" /> Slot
+                                                </span>
                                                 <span className="text-xs font-bold text-zinc-200 mt-0.5">{booking.slot}</span>
                                             </div>
                                             <div className="flex flex-col text-right">
-                                                <span className="text-[9px] uppercase tracking-wider text-zinc-500 flex items-center gap-1"><DollarSign className="w-3 h-3" /> Received</span>
+                                                <span className="text-[9px] uppercase tracking-wider text-zinc-500 flex items-center gap-1">
+                                                    <DollarSign className="w-3 h-3" /> Received
+                                                </span>
                                                 <span className="text-sm font-black text-lime-400 mt-0.5">${booking.pricePerHour || booking.price}</span>
                                             </div>
                                             <div className="flex items-center pl-4">
@@ -268,16 +279,12 @@ export default function ManageDashboard() {
                         <h2 className="text-lg font-bold text-white mb-2 uppercase tracking-wide">Deploy New Sports Arena</h2>
                         <p className="text-xs text-zinc-500 mb-6">Fill up the field details to list a new playground in SportNest system.</p>
 
-                        {message.text && (
-                            <div className={`p-4 rounded-xl text-xs font-bold mb-6 ${message.type === "success" ? "bg-lime-500/10 text-lime-400 border border-lime-500/20" : "bg-red-500/10 text-red-400 border border-red-500/20"}`}>
-                                {message.text}
-                            </div>
-                        )}
-
                         <form onSubmit={handleAddArenaSubmit} className="space-y-5">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 <div>
-                                    <label className="flex items-center text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Arena / Stadium Name</label>
+                                    <label className="flex items-center text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">
+                                        Arena / Stadium Name
+                                    </label>
                                     <input
                                         type="text" name="name" required value={formData.name} onChange={handleInputChange}
                                         placeholder="e.g. Old Trafford Turf"
@@ -285,7 +292,9 @@ export default function ManageDashboard() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="flex items-center text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Sports Type</label>
+                                    <label className="flex items-center text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">
+                                        Sports Type
+                                    </label>
                                     <input
                                         type="text" name="type" required value={formData.type} onChange={handleInputChange}
                                         placeholder="e.g. Football, Cricket, Badminton"
@@ -293,6 +302,7 @@ export default function ManageDashboard() {
                                     />
                                 </div>
                             </div>
+
                             <div>
                                 <label className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">
                                     <ImageIcon className="w-3.5 h-3.5" /> Image Link (URL)
@@ -364,7 +374,7 @@ export default function ManageDashboard() {
                             <button
                                 type="submit"
                                 disabled={submitting}
-                                className="w-full h-11 bg-lime-500 hover:bg-lime-400 disabled:bg-zinc-800 text-black font-black text-xs uppercase tracking-widest rounded-xl transition-all flex items-center justify-center"
+                                className="w-full h-11 bg-lime-500 hover:bg-lime-400 disabled:bg-zinc-800 disabled:text-zinc-500 disabled:cursor-not-allowed text-black font-black text-xs uppercase tracking-widest rounded-xl transition-all flex items-center justify-center"
                             >
                                 {submitting ? "Deploying Arena..." : "Deploy Arena / Facility"}
                             </button>

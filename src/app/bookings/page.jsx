@@ -1,10 +1,11 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import Image from "next/image";
 import { Calendar, Clock, BadgeDollarSign, Trash2, ArrowRight, ShieldCheck } from "lucide-react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function BookingsPage() {
     // Better Auth Session
@@ -26,6 +27,7 @@ export default function BookingsPage() {
                 })
                 .catch((err) => {
                     console.error("Error fetching bookings:", err);
+                    toast.error("Failed to load your reservations!");
                     setLoadingBookings(false);
                 });
         }
@@ -39,11 +41,16 @@ export default function BookingsPage() {
                 const res = await fetch(`${apiUrl}/bookings/${id}`, {
                     method: "DELETE"
                 });
+
                 if (res.ok) {
                     setBookings(bookings.filter(b => b._id !== id));
+                    toast.success("Reservation canceled successfully!");
+                } else {
+                    toast.error("Could not cancel booking. Try again.");
                 }
             } catch (err) {
                 console.error("Error canceling booking:", err);
+                toast.error("Server error occurred while canceling.");
             }
         }
     };
@@ -82,6 +89,11 @@ export default function BookingsPage() {
 
     return (
         <div className="min-h-screen bg-zinc-950 text-zinc-300 pb-20">
+            <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                theme="dark"
+            />
 
             {/* Page Header */}
             <div className="border-b border-zinc-900 bg-zinc-950 py-12 px-4 sm:px-6 lg:px-8">
@@ -177,7 +189,7 @@ export default function BookingsPage() {
                                 <div className="flex justify-end border-t border-zinc-800/60 md:border-t-0 pt-3 md:pt-0">
                                     <button
                                         onClick={() => handleCancelBooking(booking._id)}
-                                        className="h-9 px-3 rounded-xl border border-zinc-800 hover:border-red-500/30 hover:bg-red-500/10 text-zinc-500 hover:text-red-400 text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-1.5"
+                                        className="h-9 px-3 rounded-xl border border-zinc-800 hover:border-red-500/30 hover:bg-red-500/10 text-zinc-500 hover:text-red-400 text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 active:scale-95"
                                     >
                                         <Trash2 className="w-3.5 h-3.5" /> Cancel Slot
                                     </button>

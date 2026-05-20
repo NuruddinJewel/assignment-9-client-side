@@ -92,7 +92,7 @@ Whether you're booking a FIFA-grade football turf for a weekend tournament or re
 # Frontend
 npm install lucide-react        # Icon components
 npm install react-icons         # Extended icon library  
-npm install motion              # Animation library (Framer Motion)
+npm install motion              # Animation library 
 
 # Backend
 npm install express             # Web server framework

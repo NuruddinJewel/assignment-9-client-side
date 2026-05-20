@@ -7,7 +7,7 @@ export default function FeaturedSection() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch("http://localhost:5000/facilities", { cache: 'no-store' })
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities`, { cache: 'no-store' })
             .then((res) => {
                 if (!res.ok) {
                     throw new Error(`HTTP error! status: ${res.status}`);
